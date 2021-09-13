@@ -11,6 +11,7 @@ JOBS=""
 REBUILD="n"
 BUILD_TYPE="release"
 RUN_TESTS="y"
+VERBOSE="n"
 SUGGEST_USAGE="n"
 CREATE_DOXYGEN_DOCS="n"
 PLATFORM="hostwindows"
@@ -70,6 +71,9 @@ do
     	-t=*|--test=*)
 		RUN_TESTS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
     	;;
+    	-v=*|--verbose=*)
+		VERBOSE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+    	;;
     	-h|--help)
 		echo "Options:"
 		echo "  --doxygen=[$CREATE_DOXYGEN_DOCS]"
@@ -90,6 +94,9 @@ do
 		echo " "
 		echo "  -t=|--test=[$RUN_TESTS]"
 		echo "    Run tests. Values 'y' or 'n'."
+		echo " "
+		echo "  -v=|--verbose=[$VERBOSE]"
+		echo "    Show verbose (full) compiler commands."
 		echo " "
 		echo "  -h=|--help"
 		echo "    Print this help"
@@ -141,14 +148,23 @@ echo "JOBS                      : '${JOBS}'"
 echo "REBUILD                   : '${REBUILD}'"
 echo "BUILD_TYPE                : '${BUILD_TYPE}'"
 echo "REBUILD                   : '${REBUILD}'"
+echo "VERBOSE                   : '${VERBOSE}'"
 echo "RUN_TESTS                 : '${RUN_TESTS}'"
 echo "CREATE_DOXYGEN_DOCS       : '${CREATE_DOXYGEN_DOCS}'"
 echo "PLATFORM_BUILD_ROOT_DIR   : '${PLATFORM_BUILD_ROOT_DIR}'"
+
+VERBOSE_PREFIX=""
+if [ "y" == "${VERBOSE}" ]
+then
+    VERBOSE_PREFIX="VERBOSE=1 "
+    export ${VERBOSE_PREFIX}
+fi
 
 # exit 1; # FIXMENM
 
 pushd ${PLATFORM_BUILD_ROOT_DIR}
 echo "Building in: '${PLATFORM_BUILD_ROOT_DIR}'"
+echo "${VERBOSE_PREFIX} make -j ${JOBS}"
 make -j ${JOBS}
 popd
 
