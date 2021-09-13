@@ -1,8 +1,9 @@
-set (BOOST_MIN_VERSION 1.55)
-set (ICU_MIN_VERSION 60.2)
+# Not used currently.
+# The follwing are merely examples
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+#set (BOOST_MIN_VERSION 1.55)
+#set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_MULTITHREADED ON)
+#set(Boost_USE_STATIC_RUNTIME OFF)
 
 

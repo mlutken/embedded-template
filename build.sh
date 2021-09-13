@@ -143,6 +143,7 @@ fi
 # --- Print some info ---
 # -----------------------
 echo "PLATFORM                  : '${PLATFORM}'"
+echo "TOOLCHAIN                 : '${TOOLCHAIN}'"
 echo "PLATFORM_TYPE             : '${PLATFORM_TYPE}'"
 echo "JOBS                      : '${JOBS}'"
 echo "REBUILD                   : '${REBUILD}'"

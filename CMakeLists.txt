@@ -7,6 +7,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/tools/cmake/")
 
 include (default_vars)
 include (default_versions)
+include (default_versions)
 include (set_standard_compiler_flags)
 include (GetGitRevisionDescription)
 
@@ -56,13 +57,16 @@ add_definitions(
 
 
 message ("CMAKE_SYSTEM_NAME                 : '${CMAKE_SYSTEM_NAME}'")
+message ("CMAKE_CROSSCOMPILING              : '${CMAKE_CROSSCOMPILING}'")
+message ("CMAKE_SYSTEM_VERSION              : '${CMAKE_SYSTEM_VERSION}'")
 message ("PLATFORM                          : '${PLATFORM}'")
 message ("PLATFORM_TYPE                     : '${PLATFORM_TYPE}'")
 message ("CMAKE_BINARY_DIR                  : '${CMAKE_BINARY_DIR}'")
 message ("CMAKE_RUNTIME_OUTPUT_DIRECTORY    : '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'")
 message ("CMAKE_ARCHIVE_OUTPUT_DIRECTORY    : '${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}'")
+message ("CMAKE_C_COMPILER                  : '${CMAKE_C_COMPILER}'")
 message ("CMAKE_C_COMPILER_ID               : '${CMAKE_C_COMPILER_ID}'")
-message ("STANDARD_COMPILE_FLAGS            : '${STANDARD_COMPILE_FLAGS}'")
+message ("STANDARD_C_COMPILE_FLAGS          : '${STANDARD_C_COMPILE_FLAGS}'")
 message ("GIT_REFSPEC                       : '${GIT_REFSPEC}'")
 message ("GIT_SHA1                          : '${GIT_SHA1}'")
 message ("GIT_LOCAL_CHANGES                 : '${GIT_LOCAL_CHANGES}'")

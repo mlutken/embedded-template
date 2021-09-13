@@ -45,10 +45,21 @@ endfunction()
 # -----------------------------
 # --- Add simple executable ---
 # -----------------------------
+function(add_c_exe exe_name link_libs)
+    add_executable(${exe_name} "")
+    target_link_libraries(${exe_name} ${link_libs})
+    target_compile_options(${exe_name} PRIVATE ${STANDARD_C_COMPILE_FLAGS})
+    target_sources(${exe_name}
+        PRIVATE
+            "${CMAKE_CURRENT_LIST_DIR}/${exe_name}.c"
+    )
+endfunction()
+
+
 function(add_cpp_exe exe_name link_libs)
     add_executable(${exe_name} "")
     target_link_libraries(${exe_name} ${link_libs})
-    target_compile_options(${exe_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+    target_compile_options(${exe_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
     target_sources(${exe_name}
         PRIVATE
             "${CMAKE_CURRENT_LIST_DIR}/${exe_name}.cpp"
@@ -71,7 +82,7 @@ function(add_unit_test name link_libs)
         )
 
         target_link_libraries(${test_name} ${test_link_libraries} gmock gtest_main gtest ${CMAKE_THREAD_LIBS_INIT})
-        target_compile_options(${test_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+        target_compile_options(${test_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
 
         add_test(
             NAME ${test_name}
@@ -96,7 +107,7 @@ function(add_integration_test name link_libs)
         )
 
         target_link_libraries(${test_name} ${test_link_libraries} gmock gtest_main gtest ${CMAKE_THREAD_LIBS_INIT})
-        target_compile_options(${test_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+        target_compile_options(${test_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
 
         add_test(
             NAME ${test_name}
@@ -113,7 +124,7 @@ function(add_playground_c_exe name link_libs)
 
     add_executable(${playground_name} "")
     target_link_libraries(${playground_name} ${link_libs})
-    target_compile_options(${playground_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+    target_compile_options(${playground_name} PRIVATE ${STANDARD_C_COMPILE_FLAGS})
     target_sources(${playground_name}
         PRIVATE
             "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.c"
@@ -125,7 +136,7 @@ function(add_playground_cpp_exe name link_libs)
 
     add_executable(${playground_name} "")
     target_link_libraries(${playground_name} ${link_libs})
-    target_compile_options(${playground_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+    target_compile_options(${playground_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
     target_sources(${playground_name}
         PRIVATE
             "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.cpp"

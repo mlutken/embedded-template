@@ -21,7 +21,7 @@ set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY     ${CMAKE_BINARY_DIR}/lib)
 set (CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/pdb)
 
 
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (BASE_LIB_DIR "/usr/lib/x86_64-linux-gnu")
     set (BASE_INCLUDE_DIR "/usr/include")
-ENDIF ()
+endif()
