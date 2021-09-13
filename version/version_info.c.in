@@ -1,0 +1,7 @@
+
+const char* version_string ()
+{
+    return "@NETSCAVATOR_VERSION_STRING@";
+}
+
+
