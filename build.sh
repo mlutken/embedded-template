@@ -68,7 +68,7 @@ do
     	-h|--help)
 		echo "Options:"
 		echo "  -p=|--platform=[$PLATFORM]"
-		echo "    Platform! Values: hostlinux, hostwindows, emscripten, radio2003, dsp7."
+		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7."
 		echo " "
 		echo "  -r=|--rebuild=[$REBUILD]"
 		echo "    Rebuild all: Values 'y' OR 'n'."
@@ -95,7 +95,7 @@ done
 
 
 PLATFORM_TYPE="embedded"
-if [ "hostlinux" == "${PLATFORM}" -o "hostwindows" == "${PLATFORM}" ]
+if [[ "hostlinux" == "${PLATFORM}" || "hostwindows" == "${PLATFORM}" ]];
 then
     PLATFORM_TYPE="hostpc"
 fi
@@ -106,20 +106,16 @@ if [ "y" == "${REBUILD}" ]
 then
     echo "Rebuilding..."
     rm -rf ${PLATFORM_BUILD_ROOT_DIR}
-#     mkdir -p ${PROJECT_BUILD_ROOT_DIR}
-#     pushd ${PROJECT_BUILD_ROOT_DIR}
-#     cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../crawler
-#     popd
 fi
 
 
-if [ ! -d ${PLATFORM_BUILD_ROOT_DIR} -o ! -f ${PLATFORM_BUILD_ROOT_DIR}/Makefile ]
+if [[ ! -d ${PLATFORM_BUILD_ROOT_DIR} || ! -f ${PLATFORM_BUILD_ROOT_DIR}/Makefile ]];
 then
     echo "Creating build directory '${PLATFORM_BUILD_ROOT_DIR}'"
     mkdir -p ${PLATFORM_BUILD_ROOT_DIR}
     echo "Running CMake in '${PLATFORM_BUILD_ROOT_DIR}'"
     pushd ${PLATFORM_BUILD_ROOT_DIR}
-    cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../crawler
+    cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
     popd
 fi
 
@@ -133,17 +129,17 @@ echo "REBUILD                   : '${REBUILD}'"
 echo "BUILD_TYPE                : '${BUILD_TYPE}'"
 echo "PLATFORM_BUILD_ROOT_DIR   : '${PLATFORM_BUILD_ROOT_DIR}'"
 
-exit 1; # FIXMENM
+# exit 1; # FIXMENM
 
-pushd ${PROJECT_BUILD_ROOT_DIR}
-echo "Building in: '${PROJECT_BUILD_ROOT_DIR}'"
+pushd ${PLATFORM_BUILD_ROOT_DIR}
+echo "Building in: '${PLATFORM_BUILD_ROOT_DIR}'"
 make -j
 popd
 
 if [ "y" == "${RUN_TESTS}" ]
 then
     echo "Running tests ..."
-    pushd ${PROJECT_BUILD_ROOT_DIR}
+    pushd ${PLATFORM_BUILD_ROOT_DIR}
     ctest
     popd
 fi

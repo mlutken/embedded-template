@@ -1,8 +1,7 @@
-#ifndef _PROJECT_VERSION_INFO_H_
-#define _PROJECT_VERSION_INFO_H_
-
+#ifndef PROJECT_VERSION_INFO_H
+#define PROJECT_VERSION_INFO_H
 
 const char* version_string ();
 
-#endif // _PROJECT_VERSION_INFO_H_
+#endif // PROJECT_VERSION_INFO_H
 

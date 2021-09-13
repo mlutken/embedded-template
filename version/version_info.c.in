@@ -1,7 +1,6 @@
+#include <version/version_info.h>
 
 const char* version_string ()
 {
-    return "@NETSCAVATOR_VERSION_STRING@";
+    return "@PROJECT_NAME_VERSION_STRING@";
 }
-
-

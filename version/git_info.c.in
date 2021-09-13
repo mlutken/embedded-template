@@ -1,0 +1,21 @@
+#include <version/git_info.h>
+
+GIT_REFSPEC GIT_SHA1)
+git_local_changes(GIT_LOCAL_CHANGES)
+
+
+const char* git_refspec ()
+{
+    return "@GIT_REFSPEC@";
+}
+
+const char* git_sha1 ()
+{
+    return "@GIT_SHA1@";
+}
+
+const char* git_local_changes ()
+{
+    return "@GIT_LOCAL_CHANGES@";
+}
+

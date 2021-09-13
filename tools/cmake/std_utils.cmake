@@ -24,6 +24,8 @@ endfunction()
 # --------------------------------
 # --- Subdirectories functions ---
 # --------------------------------
+
+
 function(add_subdirectories_standard)
     if (NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/unittest)
         add_subdirectory(unittest)
@@ -31,6 +33,9 @@ function(add_subdirectories_standard)
     if (NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/integrationtest)
         add_subdirectory(integrationtest)
     endif()
+
+    # TODO: Consider wheter we only want to use playground "concept" on hostpc and not build these for embedded target.
+    #       We could also have an embedded_playground subdirectory for example.
     if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/playground)
         add_subdirectory(playground)
     endif()
