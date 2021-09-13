@@ -7,10 +7,12 @@ CODE_BUILD_ROOT_DIR="${CODE_ROOT_DIR}/_build"
 PROJECT_BUILD_ROOT_DIR="${CODE_BUILD_ROOT_DIR}/${PROJECT_NAME}"
 
 
+JOBS=""
 REBUILD="n"
 BUILD_TYPE="release"
 RUN_TESTS="y"
 SUGGEST_USAGE="n"
+CREATE_DOXYGEN_DOCS="n"
 PLATFORM="hostwindows"
 
 # ---------------------
@@ -53,7 +55,10 @@ export DISTRIB
 for i in $*
 do
 	case $i in
-    	-p=*|platform=*)
+    	--doxygen=*)
+		CREATE_DOXYGEN_DOCS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+		;;
+    	-p=*|--platform=*)
 		PLATFORM=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 		;;
     	-r=*|--rebuild=*)
@@ -67,6 +72,13 @@ do
     	;;
     	-h|--help)
 		echo "Options:"
+		echo "  --doxygen=[$CREATE_DOXYGEN_DOCS]"
+		echo "    Set to 'y' to create Doxygen documentation. TODO: Not implemented yet!"
+		echo " "
+		echo "  -j=|--jobs=[$JOBS]"
+		echo "    Number of parallel compiler jobs to use."
+		echo " "
+		echo " "
 		echo "  -p=|--platform=[$PLATFORM]"
 		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7."
 		echo " "
@@ -125,15 +137,19 @@ fi
 # -----------------------
 echo "PLATFORM                  : '${PLATFORM}'"
 echo "PLATFORM_TYPE             : '${PLATFORM_TYPE}'"
+echo "JOBS                      : '${JOBS}'"
 echo "REBUILD                   : '${REBUILD}'"
 echo "BUILD_TYPE                : '${BUILD_TYPE}'"
+echo "REBUILD                   : '${REBUILD}'"
+echo "RUN_TESTS                 : '${RUN_TESTS}'"
+echo "CREATE_DOXYGEN_DOCS       : '${CREATE_DOXYGEN_DOCS}'"
 echo "PLATFORM_BUILD_ROOT_DIR   : '${PLATFORM_BUILD_ROOT_DIR}'"
 
 # exit 1; # FIXMENM
 
 pushd ${PLATFORM_BUILD_ROOT_DIR}
 echo "Building in: '${PLATFORM_BUILD_ROOT_DIR}'"
-make -j
+make -j ${JOBS}
 popd
 
 if [ "y" == "${RUN_TESTS}" ]
@@ -141,6 +157,14 @@ then
     echo "Running tests ..."
     pushd ${PLATFORM_BUILD_ROOT_DIR}
     ctest
+    popd
+fi
+
+if [ "y" == "${CREATE_DOXYGEN_DOCS}" ]
+then
+    echo "Creating Doxygen documentation ..."
+    pushd ${PLATFORM_BUILD_ROOT_DIR}
+    # doxygen
     popd
 fi
 
