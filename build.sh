@@ -2,9 +2,10 @@
 
 PROJECT_NAME="embedded-template"
 PROJECT_REPOSITORY_ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CODE_ROOT_DIR="$( dirname "${PROJECT_REPOSITORY_ROOT_DIR}" )"
-CODE_BUILD_ROOT_DIR="${CODE_ROOT_DIR}/_build"
-PROJECT_BUILD_ROOT_DIR="${CODE_BUILD_ROOT_DIR}/${PROJECT_NAME}"
+TOOLCHAINS_DIR="${PROJECT_REPOSITORY_ROOT_DIR}/tools/toolchains"
+PROJECT_PARENT_DIR="$( dirname "${PROJECT_REPOSITORY_ROOT_DIR}" )"
+BUILD_ROOT_DIR="${PROJECT_PARENT_DIR}/_build"
+PROJECT_BUILD_ROOT_DIR="${BUILD_ROOT_DIR}/${PROJECT_NAME}"
 
 
 JOBS=""
@@ -14,13 +15,16 @@ RUN_TESTS="y"
 VERBOSE="n"
 SUGGEST_USAGE="n"
 CREATE_DOXYGEN_DOCS="n"
-PLATFORM="hostwindows"
+PLATFORM="hostwindows"      # Default platform set to 'hostwindows'
+HOST_PLATFORM="windows"     # Default host-platform set to 'windows'
+TOOLCHAIN=""
 
 # ---------------------
 # --- Detect system ---
 # ---------------------
 if [ -f /etc/lsb-release ]; then
-    PLATFORM="hostlinux"
+    HOST_PLATFORM="linux"   # Default host-platform detected as 'linux'
+    PLATFORM="hostlinux"    # Default platform detected as 'hostlinux'
 fi
 
 BITWIDTH=64
@@ -46,8 +50,8 @@ export DISTRIB
 # echo "DISTRIB_RELEASE               : '${DISTRIB_RELEASE}'"
 # echo "DISTRIB                       : '${DISTRIB}'"
 # echo "PROJECT_REPOSITORY_ROOT_DIR   : '${PROJECT_REPOSITORY_ROOT_DIR}'"
-# echo "CODE_ROOT_DIR                 : '${CODE_ROOT_DIR}'"
-# echo "CODE_BUILD_ROOT_DIR           : '${CODE_BUILD_ROOT_DIR}'"
+# echo "PROJECT_PARENT_DIR                 : '${PROJECT_PARENT_DIR}'"
+# echo "BUILD_ROOT_DIR           : '${BUILD_ROOT_DIR}'"
 # echo "PROJECT_BUILD_ROOT_DIR        : '${PROJECT_BUILD_ROOT_DIR}'"
 
 # -------------------------------------
@@ -68,6 +72,9 @@ do
     	-b=*|--buildtype=*)
 		BUILD_TYPE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
     	;;
+    	--toolchain=*)
+		TOOLCHAIN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+		;;
     	-t=*|--test=*)
 		RUN_TESTS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
     	;;
@@ -82,7 +89,6 @@ do
 		echo "  -j=|--jobs=[$JOBS]"
 		echo "    Number of parallel compiler jobs to use."
 		echo " "
-		echo " "
 		echo "  -p=|--platform=[$PLATFORM]"
 		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7."
 		echo " "
@@ -91,6 +97,10 @@ do
 		echo " "
 		echo "  -b=|--buildtype=[$BUILD_TYPE]"
 		echo "    'debug' or 'release' or '' (release)."
+		echo " "
+		echo "  --toolchain=[$TOOLCHAIN]"
+		echo "    Leave this empty for default builds for the hostpc platform Linux uses 'gcc' and Windows uses 'msvc' as default. "
+		echo "    For linux or windows hostpc builds you could build using clang by setting this to 'clang'. "
 		echo " "
 		echo "  -t=|--test=[$RUN_TESTS]"
 		echo "    Run tests. Values 'y' or 'n'."
@@ -119,7 +129,17 @@ then
     PLATFORM_TYPE="hostpc"
 fi
 
-PLATFORM_BUILD_ROOT_DIR="${PROJECT_BUILD_ROOT_DIR}/${PLATFORM}"
+TOOLCHAIN_PATH=""
+if [[ "" == "${TOOLCHAIN}" ]];
+then
+    if      [[ "hostlinux"      == "${PLATFORM}" ]]; then TOOLCHAIN="gcc";
+    elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then TOOLCHAIN="msvc";
+    fi
+else
+    TOOLCHAIN_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${TOOLCHAIN}.toolchain.cmake"
+fi
+
+PLATFORM_BUILD_ROOT_DIR="${PROJECT_BUILD_ROOT_DIR}/${PLATFORM}.${TOOLCHAIN}"
 
 if [ "y" == "${REBUILD}" ]
 then
@@ -134,7 +154,13 @@ then
     mkdir -p ${PLATFORM_BUILD_ROOT_DIR}
     echo "Running CMake in '${PLATFORM_BUILD_ROOT_DIR}'"
     pushd ${PLATFORM_BUILD_ROOT_DIR}
-    cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+    if [[ "" == "${TOOLCHAIN_PATH}" ]]; then
+        echo "CMAKE CMD: cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
+        cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+    else
+        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
+        cmake -D CMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+    fi
     popd
 fi
 
@@ -143,7 +169,9 @@ fi
 # --- Print some info ---
 # -----------------------
 echo "PLATFORM                  : '${PLATFORM}'"
+echo "HOST_PLATFORM             : '${HOST_PLATFORM}'"
 echo "TOOLCHAIN                 : '${TOOLCHAIN}'"
+echo "TOOLCHAIN_PATH            : '${TOOLCHAIN_PATH}'"
 echo "PLATFORM_TYPE             : '${PLATFORM_TYPE}'"
 echo "JOBS                      : '${JOBS}'"
 echo "REBUILD                   : '${REBUILD}'"
