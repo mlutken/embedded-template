@@ -29,10 +29,7 @@ static void test_print_vector_s(cvector_s_t* self)
 
 int main()
 {
-    printf("cvector_s playground\n");
-    printf("project version  : '%s'\n", version_string());
-    printf("git sha          : '%s'\n", git_sha1());
-    printf("git local changes: '%s'\n", git_local_changes());
+    printf("*** cvector_s playground ***\n");
     const int res = cvector_s_create(&my_vector_g, my_fifo_elem_max_size, my_fifo_elems_max_count, (char*)my_vector_buffer_g);
     printf("cvector_s_create()         : '%d'\n", res);
     printf("cvector_s_empty()          : '%d'  cvector_s_full(): '%d'\n", cvector_s_empty(&my_vector_g), cvector_s_full(&my_vector_g));
