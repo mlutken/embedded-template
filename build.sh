@@ -3,9 +3,16 @@
 PROJECT_NAME="embedded-template"
 PROJECT_REPOSITORY_ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TOOLCHAINS_DIR="${PROJECT_REPOSITORY_ROOT_DIR}/tools/toolchains"
+CONFIG_DIR="${PROJECT_REPOSITORY_ROOT_DIR}/tools/config"
 PROJECT_PARENT_DIR="$( dirname "${PROJECT_REPOSITORY_ROOT_DIR}" )"
 BUILD_ROOT_DIR="${PROJECT_PARENT_DIR}/_build"
 PROJECT_BUILD_ROOT_DIR="${BUILD_ROOT_DIR}/${PROJECT_NAME}"
+
+# Clang(tidy) commands MUST all be in PATH. The setup scripts must ensure this.
+RUN_CLANG_TIDY_PY_CMD="run-clang-tidy-12.py"
+CLANG_TIDY_CMD="clang-tidy-12"
+### CLANG_TIDY_CHECKS="*,clang-analyzer-*"
+CLANG_TIDY_CHECKS="$( cat "${CONFIG_DIR}/clangtidy-default-checks.cfg" )"
 
 
 JOBS=""
@@ -90,7 +97,7 @@ do
 		echo "    Number of parallel compiler jobs to use."
 		echo " "
 		echo "  -p=|--platform=[$PLATFORM]"
-		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7, web."
+		echo "    Platform! Values: targetall, hostlinux, hostwindows, staticanalysis, radio2003, dsp7, web."
 		echo " "
 		echo "  -r=|--rebuild=[$REBUILD]"
 		echo "    Rebuild all: Values 'y' OR 'n'."
@@ -123,32 +130,32 @@ do
 done
 
 
+
 PLATFORM_TYPE="embedded"
-if [[ "hostlinux" == "${PLATFORM}" || "hostwindows" == "${PLATFORM}" ]]; then
+if [[ "${PLATFORM}" == "hostlinux" || "${PLATFORM}" == "hostwindows" ]]; then
     PLATFORM_TYPE="hostpc"
-elif [[ "staticlinux" == "${PLATFORM}" || "staticwindows" == "${PLATFORM}" ]]; then
-    PLATFORM_TYPE="staticanalysis"
+elif [[ "${PLATFORM}" == "staticanalysis" ]]; then
+    PLATFORM_TYPE="analysis"
 fi
 
 COMPILER_PATH=""
 if [[ "" == "${COMPILER}" ]];
 then
+    # *** Handle default compilers fot each platform ***
     if      [[ "hostlinux"      == "${PLATFORM}" ]]; then COMPILER="gcc";
     elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="msvc";
-    fi
-else
-    COMPILER_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${COMPILER}.toolchain.cmake"
-    # The default compilers on each platform does NOT have a toolchain 
-    if [[   ("${PLATFORM}" == "hostlinux" && "${COMPILER}" == "gcc")    ||
-            ("${PLATFORM}" == "hostwindows" && "${COMPILER}" == "msvc") 
-       ]]; 
-    then
-        COMPILER_PATH=""
+    elif    [[ "staticanalysis" == "${PLATFORM}" ]]; then COMPILER="clangtidy";
     fi
 fi
 
-if [[ ! -f ${COMPILER_PATH} ]]; then
-    COMPILER_PATH= "";
+
+COMPILER_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${COMPILER}.toolchain.cmake"
+# The default compilers on each platform does NOT have a toolchain 
+if [[   ("${PLATFORM}" == "hostlinux" && "${COMPILER}" == "gcc")    ||
+        ("${PLATFORM}" == "hostwindows" && "${COMPILER}" == "msvc") 
+    ]]; 
+then
+    COMPILER_PATH=""
 fi
 
 PLATFORM_BUILD_ROOT_DIR="${PROJECT_BUILD_ROOT_DIR}/${PLATFORM}.${COMPILER}"
@@ -167,11 +174,11 @@ then
     echo "Running CMake in '${PLATFORM_BUILD_ROOT_DIR}'"
     pushd ${PLATFORM_BUILD_ROOT_DIR}
     if [[ "" == "${COMPILER_PATH}" ]]; then
-        echo "CMAKE CMD: cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
-        cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+        echo "!CMAKE CMD: cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
+        cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
     else
-        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
-        cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
+        cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
     fi
     popd
 fi
@@ -180,19 +187,19 @@ fi
 # -----------------------
 # --- Print some info ---
 # -----------------------
-echo "PLATFORM                  : '${PLATFORM}'"
-echo "HOST_PLATFORM             : '${HOST_PLATFORM}'"
-echo "COMPILER                  : '${COMPILER}'"
-echo "COMPILER_PATH             : '${COMPILER_PATH}'"
-echo "PLATFORM_TYPE             : '${PLATFORM_TYPE}'"
-echo "JOBS                      : '${JOBS}'"
-echo "REBUILD                   : '${REBUILD}'"
-echo "BUILD_TYPE                : '${BUILD_TYPE}'"
-echo "REBUILD                   : '${REBUILD}'"
-echo "VERBOSE                   : '${VERBOSE}'"
-echo "RUN_TESTS                 : '${RUN_TESTS}'"
-echo "CREATE_DOXYGEN_DOCS       : '${CREATE_DOXYGEN_DOCS}'"
-echo "PLATFORM_BUILD_ROOT_DIR   : '${PLATFORM_BUILD_ROOT_DIR}'"
+echo "PLATFORM                      : '${PLATFORM}'"
+echo "HOST_PLATFORM                 : '${HOST_PLATFORM}'"
+echo "COMPILER                      : '${COMPILER}'"
+echo "COMPILER_PATH                 : '${COMPILER_PATH}'"
+echo "PLATFORM_TYPE                 : '${PLATFORM_TYPE}'"
+echo "JOBS                          : '${JOBS}'"
+echo "REBUILD                       : '${REBUILD}'"
+echo "BUILD_TYPE                    : '${BUILD_TYPE}'"
+echo "REBUILD                       : '${REBUILD}'"
+echo "VERBOSE                       : '${VERBOSE}'"
+echo "RUN_TESTS                     : '${RUN_TESTS}'"
+echo "CREATE_DOXYGEN_DOCS           : '${CREATE_DOXYGEN_DOCS}'"
+echo "PLATFORM_BUILD_ROOT_DIR       : '${PLATFORM_BUILD_ROOT_DIR}'"
 
 VERBOSE_PREFIX=""
 if [ "y" == "${VERBOSE}" ]
@@ -204,13 +211,21 @@ fi
 # exit 1; # FIXMENM
 
 pushd ${PLATFORM_BUILD_ROOT_DIR}
-echo "Building in: '${PLATFORM_BUILD_ROOT_DIR}'"
-echo "${VERBOSE_PREFIX} make -j ${JOBS}"
-make -j ${JOBS}
+if [[ "${PLATFORM}" == "staticanalysis" ]]; then
+    echo "Running static analysis using '${COMPILER}' ..."
+    if [[ "${COMPILER}" == "clangtidy" ]]; then
+        echo "${RUN_CLANG_TIDY_PY_CMD} -p ${PLATFORM_BUILD_ROOT_DIR} -checks ${CLANG_TIDY_CHECKS}"
+        ${RUN_CLANG_TIDY_PY_CMD} -p ${PLATFORM_BUILD_ROOT_DIR} -checks ${CLANG_TIDY_CHECKS}
+    fi
+else
+    echo "Building in: '${PLATFORM_BUILD_ROOT_DIR}'"
+    echo "${VERBOSE_PREFIX} make -j ${JOBS}"
+    make -j ${JOBS}
+fi
 popd
 
-if [ "y" == "${RUN_TESTS}" ]
-then
+
+if [[ "y" == "${RUN_TESTS}" && "${PLATFORM_TYPE}" == "hostpc" ]]; then
     echo "Running tests ..."
     pushd ${PLATFORM_BUILD_ROOT_DIR}
     ctest
@@ -225,6 +240,7 @@ then
     popd
 fi
 
-
+echo "PLATFORM_BUILD_ROOT_DIR: '${PLATFORM_BUILD_ROOT_DIR}'"
+echo "compile_commands.json: ${PLATFORM_BUILD_ROOT_DIR}/compile_commands.json"
 
 

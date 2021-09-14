@@ -120,25 +120,29 @@ endfunction()
 # --- Playground functions ---
 # ----------------------------
 function(add_playground_c_exe name link_libs)
-    set (playground_name  ${name}_playground)
+    if  (${PLATFORM_TYPE} MATCHES "hostpc")
+        set (playground_name  ${name}_playground)
 
-    add_executable(${playground_name} "")
-    target_link_libraries(${playground_name} ${link_libs})
-    target_compile_options(${playground_name} PRIVATE ${STANDARD_C_COMPILE_FLAGS})
-    target_sources(${playground_name}
-        PRIVATE
-            "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.c"
-    )
+        add_executable(${playground_name} "")
+        target_link_libraries(${playground_name} ${link_libs})
+        target_compile_options(${playground_name} PRIVATE ${STANDARD_C_COMPILE_FLAGS})
+        target_sources(${playground_name}
+            PRIVATE
+                "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.c"
+        )
+    endif()
 endfunction()
 
 function(add_playground_cpp_exe name link_libs)
-    set (playground_name  ${name}_playground)
+    if  (${PLATFORM_TYPE} MATCHES "hostpc")
+        set (playground_name  ${name}_playground)
 
-    add_executable(${playground_name} "")
-    target_link_libraries(${playground_name} ${link_libs})
-    target_compile_options(${playground_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
-    target_sources(${playground_name}
-        PRIVATE
-            "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.cpp"
-    )
+        add_executable(${playground_name} "")
+        target_link_libraries(${playground_name} ${link_libs})
+        target_compile_options(${playground_name} PRIVATE ${STANDARD_CXX_COMPILE_FLAGS})
+        target_sources(${playground_name}
+            PRIVATE
+                "${CMAKE_CURRENT_LIST_DIR}/${playground_name}.cpp"
+        )
+    endif()
 endfunction()

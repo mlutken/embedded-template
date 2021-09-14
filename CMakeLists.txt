@@ -65,6 +65,7 @@ message ("CMAKE_RUNTIME_OUTPUT_DIRECTORY    : '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 message ("CMAKE_ARCHIVE_OUTPUT_DIRECTORY    : '${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}'")
 message ("CMAKE_C_COMPILER                  : '${CMAKE_C_COMPILER}'")
 message ("CMAKE_C_COMPILER_ID               : '${CMAKE_C_COMPILER_ID}'")
+message ("CMAKE_EXPORT_COMPILE_COMMANDS     : '${CMAKE_EXPORT_COMPILE_COMMANDS}'")
 message ("STANDARD_C_COMPILE_FLAGS          : '${STANDARD_C_COMPILE_FLAGS}'")
 message ("GIT_REFSPEC                       : '${GIT_REFSPEC}'")
 message ("GIT_SHA1                          : '${GIT_SHA1}'")
