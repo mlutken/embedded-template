@@ -24,10 +24,10 @@ get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 git_local_changes(GIT_LOCAL_CHANGES)
 
 #  --- C/C++ standard ---
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD          11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD            99)
+set(CMAKE_C_STANDARD_REQUIRED   ON)
 
 
 ## Set 3rdparty install dir
@@ -40,7 +40,6 @@ if ( NOT DEFINED PLATFORM_TYPE)
     set (PLATFORM_TYPE hostpc)  # Default when not using a cross compiling toolchain
 endif()
 if ( NOT DEFINED PLATFORM)
-    message ("DDDDDDDDDDDDDDDDDDDDDDDD")
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         set (PLATFORM hostlinux)
     elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")

@@ -27,10 +27,10 @@ endfunction()
 
 
 function(add_subdirectories_standard)
-    if (NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/unittest)
+    if ( (${PLATFORM_TYPE} MATCHES "hostpc") AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/unittest)
         add_subdirectory(unittest)
     endif()
-    if (NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/integrationtest)
+    if ( (${PLATFORM_TYPE} MATCHES "hostpc") AND EXISTS ${CMAKE_CURRENT_LIST_DIR}/integrationtest)
         add_subdirectory(integrationtest)
     endif()
 
@@ -70,7 +70,7 @@ endfunction()
 # --- Unit test functions ---
 # ---------------------------
 function(add_unit_test name link_libs)
-    if (NOT CMAKE_CROSSCOMPILING)
+    if  (${PLATFORM_TYPE} MATCHES "hostpc")
         set (test_name  ${name}_unittest)
         set (test_link_libraries ${link_libs})
         find_package(Threads REQUIRED)
@@ -95,7 +95,7 @@ endfunction()
 # --- Integration test functions ---
 # ----------------------------------
 function(add_integration_test name link_libs)
-    if (NOT CMAKE_CROSSCOMPILING)
+    if  (${PLATFORM_TYPE} MATCHES "hostpc")
         set (test_name  ${name}_integrationtest)
         set (test_link_libraries ${link_libs})
         find_package(Threads REQUIRED)

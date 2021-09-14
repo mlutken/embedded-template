@@ -1,11 +1,11 @@
 # See: https://github.com/mosra/toolchains/blob/master/generic/Emscripten-wasm.cmake 
-set(CMAKE_SYSTEM_NAME Emscripten)
-set(CMAKE_SYSTEM_VERSION 1)
-##set(CMAKE_SYSTEM_PROCESSOR arm)
-# _wasm-build$ cmake ../crawler -DCMAKE_TOOLCHAIN_FILE=../crawler/tools/toolchains/emscripten-wasm-toolchain.cmake 
+set (CMAKE_SYSTEM_NAME      Emscripten  )
+set (CMAKE_SYSTEM_VERSION   1           )
+set (CMAKE_CROSSCOMPILING   TRUE        )
 
-set(PLATFORM web)   # Backwards compatibility ?
-set(PLATFORM_TYPE embedded)  # As opposed to your Linux/Windows development PC
+set (PLATFORM               web         )
+set (PLATFORM_COMPILER      emscripten  )
+set (PLATFORM_TYPE          embedded    )
 
 # Help CMake find the platform file
 #### Already done in main CMakeLists.txt set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../modules ${CMAKE_MODULE_PATH})

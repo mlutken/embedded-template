@@ -17,11 +17,11 @@ SUGGEST_USAGE="n"
 CREATE_DOXYGEN_DOCS="n"
 PLATFORM="hostwindows"      # Default platform set to 'hostwindows'
 HOST_PLATFORM="windows"     # Default host-platform set to 'windows'
-TOOLCHAIN=""
+COMPILER=""
 
-# ---------------------
-# --- Detect system ---
-# ---------------------
+# -----------------------------
+# --- Detect default system ---
+# -----------------------------
 if [ -f /etc/lsb-release ]; then
     HOST_PLATFORM="linux"   # Default host-platform detected as 'linux'
     PLATFORM="hostlinux"    # Default platform detected as 'hostlinux'
@@ -72,8 +72,8 @@ do
     	-b=*|--buildtype=*)
 		BUILD_TYPE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
     	;;
-    	--toolchain=*)
-		TOOLCHAIN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+    	--compiler=*)
+		COMPILER=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 		;;
     	-t=*|--test=*)
 		RUN_TESTS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -90,7 +90,7 @@ do
 		echo "    Number of parallel compiler jobs to use."
 		echo " "
 		echo "  -p=|--platform=[$PLATFORM]"
-		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7."
+		echo "    Platform! Values: targetall, hostlinux, hostwindows, clangstatic, radio2003, dsp7, web."
 		echo " "
 		echo "  -r=|--rebuild=[$REBUILD]"
 		echo "    Rebuild all: Values 'y' OR 'n'."
@@ -98,7 +98,7 @@ do
 		echo "  -b=|--buildtype=[$BUILD_TYPE]"
 		echo "    'debug' or 'release' or '' (release)."
 		echo " "
-		echo "  --toolchain=[$TOOLCHAIN]"
+		echo "  --compiler=[$COMPILER]"
 		echo "    Leave this empty for default builds for the hostpc platform Linux uses 'gcc' and Windows uses 'msvc' as default. "
 		echo "    For linux or windows hostpc builds you could build using clang by setting this to 'clang'. "
 		echo " "
@@ -124,22 +124,34 @@ done
 
 
 PLATFORM_TYPE="embedded"
-if [[ "hostlinux" == "${PLATFORM}" || "hostwindows" == "${PLATFORM}" ]];
-then
+if [[ "hostlinux" == "${PLATFORM}" || "hostwindows" == "${PLATFORM}" ]]; then
     PLATFORM_TYPE="hostpc"
+elif [[ "staticlinux" == "${PLATFORM}" || "staticwindows" == "${PLATFORM}" ]]; then
+    PLATFORM_TYPE="staticanalysis"
 fi
 
-TOOLCHAIN_PATH=""
-if [[ "" == "${TOOLCHAIN}" ]];
+COMPILER_PATH=""
+if [[ "" == "${COMPILER}" ]];
 then
-    if      [[ "hostlinux"      == "${PLATFORM}" ]]; then TOOLCHAIN="gcc";
-    elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then TOOLCHAIN="msvc";
+    if      [[ "hostlinux"      == "${PLATFORM}" ]]; then COMPILER="gcc";
+    elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="msvc";
     fi
 else
-    TOOLCHAIN_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${TOOLCHAIN}.toolchain.cmake"
+    COMPILER_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${COMPILER}.toolchain.cmake"
+    # The default compilers on each platform does NOT have a toolchain 
+    if [[   ("${PLATFORM}" == "hostlinux" && "${COMPILER}" == "gcc")    ||
+            ("${PLATFORM}" == "hostwindows" && "${COMPILER}" == "msvc") 
+       ]]; 
+    then
+        COMPILER_PATH=""
+    fi
 fi
 
-PLATFORM_BUILD_ROOT_DIR="${PROJECT_BUILD_ROOT_DIR}/${PLATFORM}.${TOOLCHAIN}"
+if [[ ! -f ${COMPILER_PATH} ]]; then
+    COMPILER_PATH= "";
+fi
+
+PLATFORM_BUILD_ROOT_DIR="${PROJECT_BUILD_ROOT_DIR}/${PLATFORM}.${COMPILER}"
 
 if [ "y" == "${REBUILD}" ]
 then
@@ -154,12 +166,12 @@ then
     mkdir -p ${PLATFORM_BUILD_ROOT_DIR}
     echo "Running CMake in '${PLATFORM_BUILD_ROOT_DIR}'"
     pushd ${PLATFORM_BUILD_ROOT_DIR}
-    if [[ "" == "${TOOLCHAIN_PATH}" ]]; then
+    if [[ "" == "${COMPILER_PATH}" ]]; then
         echo "CMAKE CMD: cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
         cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
     else
-        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
-        cmake -D CMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
+        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}"
+        cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} ../../../${PROJECT_NAME}
     fi
     popd
 fi
@@ -170,8 +182,8 @@ fi
 # -----------------------
 echo "PLATFORM                  : '${PLATFORM}'"
 echo "HOST_PLATFORM             : '${HOST_PLATFORM}'"
-echo "TOOLCHAIN                 : '${TOOLCHAIN}'"
-echo "TOOLCHAIN_PATH            : '${TOOLCHAIN_PATH}'"
+echo "COMPILER                  : '${COMPILER}'"
+echo "COMPILER_PATH             : '${COMPILER_PATH}'"
 echo "PLATFORM_TYPE             : '${PLATFORM_TYPE}'"
 echo "JOBS                      : '${JOBS}'"
 echo "REBUILD                   : '${REBUILD}'"
