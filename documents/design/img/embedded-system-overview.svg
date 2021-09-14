@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="170.70834mm"
+   height="118.39777mm"
+   viewBox="0 0 170.70834 118.39777"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="embedded-system-overview.svg">
   <defs
      id="defs2" />
@@ -23,18 +23,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="400"
-     inkscape:cy="560"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="173.03431"
+     inkscape:cy="124.30776"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
-     inkscape:window-width="1343"
-     inkscape:window-height="846"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -43,16 +43,17 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-14.636737,-45.812993)">
     <rect
-       style="fill:#cccccc;fill-rule:evenodd;stroke-width:0.264583"
+       style="fill:#cccccc;fill-rule:evenodd;stroke-width:0.26458299"
        id="rect10"
        width="96.758949"
        height="64.253136"
@@ -60,14 +61,26 @@
        y="99.957634" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="14.530904"
-       y="53.8563"
+       style="font-style:normal;font-weight:normal;font-size:10.58329964px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+       x="57.828568"
+       y="115.32829"
        id="text14"><tspan
          sodipodi:role="line"
          id="tspan12"
-         x="14.530904"
-         y="53.8563"
-         style="stroke-width:0.264583">TODO: Embedded system diagram</tspan></text>
+         x="57.828568"
+         y="115.32829"
+         style="stroke-width:0.26458299">TODO: Embedded </tspan><tspan
+         sodipodi:role="line"
+         x="57.828568"
+         y="128.55742"
+         style="stroke-width:0.26458299"
+         id="tspan815">system diagram</tspan></text>
+    <ellipse
+       style="fill:#000080;stroke:#800000;stroke-width:2.25999975;paint-order:fill markers stroke"
+       id="path817"
+       cx="94.817596"
+       cy="146.03644"
+       rx="11.492589"
+       ry="5.8799295" />
   </g>
 </svg>

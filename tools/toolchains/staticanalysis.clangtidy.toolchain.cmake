@@ -28,6 +28,7 @@ set(CMAKE_AR            "${CLANG_PREFIX}/llvm-ar${CLANG_SUFFIX}" CACHE PATH "Pat
 set(CMAKE_RANLIB        "${CLANG_PREFIX}/llvm-ranlib${CLANG_SUFFIX}" CACHE PATH "Path to Clang ranlib")
 
 
+# https://clang.llvm.org/extra/clang-tidy/index.html
 # https://hg.mozilla.org/mozilla-central/file/tip/tools/clang-tidy/config.yaml
 # clang-tidy-12 -list-checks
 # run-clang-tidy-12.py -checks *,clang-analyzer-* /home/ml/code/embedded-template/base/containers/cvector_s.c
