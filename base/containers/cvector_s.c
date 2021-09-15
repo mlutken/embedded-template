@@ -16,9 +16,9 @@ void* cvector_s_get_ptr_to_index (cvector_s_t* self, size_t index)
 /** Move elements */
 void cvector_s_move_elements (cvector_s_t* self, size_t index_from, size_t index_to)
 {
-    if (index_from == index_to) return;
+    if (index_from == index_to) { return; }
     const size_t size = cvector_s_size(self);
-    if (size == 0) return;
+    if (size == 0) { return; }
     size_t positions = size - index_from;
 
     void* ptr_from  = cvector_s_get_ptr_to_index (self, index_from);
