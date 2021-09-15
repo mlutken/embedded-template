@@ -17,21 +17,6 @@ Open a windows command propmt with Admin rights and run these commands
 
 
 
-Manual preparations for install-xx.sh scripts
----------------------------------------------
-You need to have this repository checked out and a working git bash!
-
-
-Then open a git bash shell and navigate to the setup/windows directory and run install-all.sh
-
-This script will mostly run GUI installers so make sure you read the output in the shell for each 
-program to make sure you choose the correct options.
-
-But generally this entails allowing the intaller to update your PATH environment variable and 
-otherwise simply install with default options as a rule, except for QTCreator, where you only need to 
-install the actual creator IDE and not any of the QT libraries.
-
-
 Setup meld as git diff and merge tool
 -------------------------------------
 NOTE: The Meld 3.20 Windows build uses a new build chain. And we DO get crashes so for now we stick to Meld 3.18.3.
