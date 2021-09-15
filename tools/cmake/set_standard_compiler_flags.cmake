@@ -7,10 +7,17 @@
 
 
 if ( (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU") OR (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang") )
-    set (COMMON_C_COMPILE_FLAGS "-fPIC")
-    set (COMMON_CXX_COMPILE_FLAGS "-fPIC")
-    set (STANDARD_C_COMPILE_FLAGS "-Wall;-Wextra;-Wsign-conversion;-Werror;-fPIC")
-    set (STANDARD_CXX_COMPILE_FLAGS "-Wall;-Wextra;-Wsign-conversion;-Wno-zero-as-null-pointer-constant;-Werror;-fPIC")
+
+    set (SYSTEM_SPECIFIC_FLAGS "")
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        set (SYSTEM_SPECIFIC_FLAGS ";-fPIC")
+    endif()
+
+    set (COMMON_C_COMPILE_FLAGS "${SYSTEM_SPECIFIC_FLAGS}")
+    set (COMMON_CXX_COMPILE_FLAGS "${SYSTEM_SPECIFIC_FLAGS}")
+    set (STANDARD_C_COMPILE_FLAGS "-Wall;-Wextra;-Wsign-conversion;-Werror${SYSTEM_SPECIFIC_FLAGS}")
+    set (STANDARD_CXX_COMPILE_FLAGS "-Wall;-Wextra;-Wsign-conversion;-Wno-zero-as-null-pointer-constant;-Werror${SYSTEM_SPECIFIC_FLAGS}")
+
 #elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
 #elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "ARMCC")
 #elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "ARMClang")
