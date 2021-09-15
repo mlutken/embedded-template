@@ -19,6 +19,6 @@ get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 
 # Set target properties and compile options, dependencies etc.
 target_include_directories(${library_name} PUBLIC ${PARENT_DIR})
-target_compile_options(${library_name} PRIVATE ${STANDARD_COMPILE_FLAGS})
+target_compile_options(${library_name} PRIVATE ${STANDARD_C_COMPILE_FLAGS})
 
 add_subdirectories_standard()

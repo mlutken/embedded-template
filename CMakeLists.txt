@@ -5,6 +5,10 @@ enable_testing()
 # Add some cmake modules from PRJ_ROOT/tools/cmake directory
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/tools/cmake/")
 
+if(EXISTS "C:\\Windows")
+    set (CMAKE_SYSTEM_NAME "Windows")
+endif()
+
 include (default_vars)
 include (default_versions)
 include (default_versions)

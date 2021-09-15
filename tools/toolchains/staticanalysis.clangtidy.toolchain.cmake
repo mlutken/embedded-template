@@ -6,26 +6,25 @@ set (PLATFORM               staticanalysis  )
 set (PLATFORM_COMPILER      clangtidy       )
 set (PLATFORM_TYPE          analysis        )
 
-# Give a hand to first-time Windows users
+set (CLANG_PREFIX       "/usr/bin/")
+set (CLANG_TIDY_PREFIX  "/usr/bin/")
+
 if(CMAKE_HOST_WIN32)
-    if(CMAKE_GENERATOR MATCHES "Visual Studio")
-        message(FATAL_ERROR "Visual Studio project generator doesn't support compiling to Clang. Please use -G Ninja or other generators instead.")
-    endif()
+    # Assume clang are in PATH
+    set (CLANG_PREFIX       "")
+    set (CLANG_TIDY_PREFIX  "")
 endif()
 
 
-set(CLANG_PREFIX "/usr/bin")
-set(CLANG_TIDY_PREFIX "/usr/bin")
 
 message ("*** FIXMENM CLANG TIDY: '${CLANG_PREFIX}'" )
 
-
 # NOTE: Seems that for most cases we do not need the llvm-ar/llvm-ranlib, but can
 #       simply use the normal system ar/ranlib.
-set(CMAKE_C_COMPILER    "${CLANG_PREFIX}/clang${CLANG_SUFFIX}")
-set(CMAKE_CXX_COMPILER  "${CLANG_PREFIX}/clang++${CLANG_SUFFIX}")
-set(CMAKE_AR            "${CLANG_PREFIX}/llvm-ar${CLANG_SUFFIX}" CACHE PATH "Path to Clang ar")
-set(CMAKE_RANLIB        "${CLANG_PREFIX}/llvm-ranlib${CLANG_SUFFIX}" CACHE PATH "Path to Clang ranlib")
+set(CMAKE_C_COMPILER    "${CLANG_PREFIX}clang${CLANG_SUFFIX}")
+set(CMAKE_CXX_COMPILER  "${CLANG_PREFIX}clang++${CLANG_SUFFIX}")
+set(CMAKE_AR            "${CLANG_PREFIX}llvm-ar${CLANG_SUFFIX}" CACHE PATH "Path to Clang ar")
+set(CMAKE_RANLIB        "${CLANG_PREFIX}llvm-ranlib${CLANG_SUFFIX}" CACHE PATH "Path to Clang ranlib")
 
 
 # https://clang.llvm.org/extra/clang-tidy/index.html

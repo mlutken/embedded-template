@@ -9,8 +9,8 @@ BUILD_ROOT_DIR="${PROJECT_PARENT_DIR}/_build"
 PROJECT_BUILD_ROOT_DIR="${BUILD_ROOT_DIR}/${PROJECT_NAME}"
 
 # Clang(tidy) commands MUST all be in PATH. The setup scripts must ensure this.
-RUN_CLANG_TIDY_PY_CMD="run-clang-tidy-12.py"
-CLANG_TIDY_CMD="clang-tidy-12"
+RUN_CLANG_TIDY_PY_CMD="run-clang-tidy.py"
+CLANG_TIDY_CMD="clang-tidy"
 ### CLANG_TIDY_CHECKS="*,clang-analyzer-*"
 CLANG_TIDY_CHECKS="$( cat "${CONFIG_DIR}/clangtidy-default-checks.cfg" )"
 
@@ -25,11 +25,14 @@ CREATE_DOXYGEN_DOCS="n"
 PLATFORM="hostwindows"      # Default platform set to 'hostwindows'
 HOST_PLATFORM="windows"     # Default host-platform set to 'windows'
 COMPILER=""
+CMAKE_GENERATOR="Unix Makefiles"
 
 # -----------------------------
 # --- Detect default system ---
 # -----------------------------
 if [ -f /etc/lsb-release ]; then
+    RUN_CLANG_TIDY_PY_CMD="run-clang-tidy-12.py"
+    CLANG_TIDY_CMD="clang-tidy-12"
     HOST_PLATFORM="linux"   # Default host-platform detected as 'linux'
     PLATFORM="hostlinux"    # Default platform detected as 'hostlinux'
 fi
@@ -103,7 +106,7 @@ do
 		echo "    Rebuild all: Values 'y' OR 'n'."
 		echo " "
 		echo "  -b=|--buildtype=[$BUILD_TYPE]"
-		echo "    'debug' or 'release' or '' (release)."
+		echo "    'debug' or 'release' or 'debug' (release)."
 		echo " "
 		echo "  --compiler=[$COMPILER]"
 		echo "    Leave this empty for default builds for the hostpc platform Linux uses 'gcc' and Windows uses 'msvc' as default. "
@@ -143,7 +146,7 @@ if [[ "" == "${COMPILER}" ]];
 then
     # *** Handle default compilers fot each platform ***
     if      [[ "hostlinux"      == "${PLATFORM}" ]]; then COMPILER="gcc";
-    elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="msvc";
+    elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="gcc";
     elif    [[ "staticanalysis" == "${PLATFORM}" ]]; then COMPILER="clangtidy";
     fi
 fi
@@ -152,7 +155,7 @@ fi
 COMPILER_PATH="${TOOLCHAINS_DIR}/${PLATFORM}.${COMPILER}.toolchain.cmake"
 # The default compilers on each platform does NOT have a toolchain 
 if [[   ("${PLATFORM}" == "hostlinux" && "${COMPILER}" == "gcc")    ||
-        ("${PLATFORM}" == "hostwindows" && "${COMPILER}" == "msvc") 
+        ("${PLATFORM}" == "hostwindows" && "${COMPILER}" == "gcc") 
     ]]; 
 then
     COMPILER_PATH=""
@@ -174,11 +177,11 @@ then
     echo "Running CMake in '${PLATFORM_BUILD_ROOT_DIR}'"
     pushd ${PLATFORM_BUILD_ROOT_DIR}
     if [[ "" == "${COMPILER_PATH}" ]]; then
-        echo "!CMAKE CMD: cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
-        cmake -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
+        echo "!CMAKE CMD: cmake -G \"${CMAKE_GENERATOR}\" -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
+        cmake -G "${CMAKE_GENERATOR}" -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
     else
-        echo "CMAKE CMD: cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
-        cmake -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
+        echo "CMAKE CMD: cmake -G \"${CMAKE_GENERATOR}\" -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}"
+        cmake -G "${CMAKE_GENERATOR}" -D CMAKE_TOOLCHAIN_FILE=${COMPILER_PATH} -D CMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../../${PROJECT_NAME}
     fi
     popd
 fi
