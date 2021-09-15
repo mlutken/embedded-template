@@ -30,7 +30,7 @@ void cvector_s_insert_at(cvector_s_t* self, size_t index, const void* elm_ptr, s
 {
     char* dst_ptr = cvector_s_get_ptr_to_index(self, index);
     memcpy (dst_ptr, elm_ptr, elem_size);
-    self->elems_count_ = self->elems_count_ + 1u;
+    self->elems_count_ = self->elems_count_ + 1U;
 }
 
 
