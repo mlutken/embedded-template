@@ -147,6 +147,7 @@ then
     # *** Handle default compilers fot each platform ***
     if      [[ "hostlinux"      == "${PLATFORM}" ]]; then COMPILER="gcc";
     elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="gcc";
+    elif    [[ "web"            == "${PLATFORM}" ]]; then COMPILER="emscripten";
     elif    [[ "staticanalysis" == "${PLATFORM}" ]]; then COMPILER="clangtidy";
     fi
 fi
