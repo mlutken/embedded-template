@@ -100,7 +100,7 @@ do
 		echo "    Number of parallel compiler jobs to use."
 		echo " "
 		echo "  -p=|--platform=[$PLATFORM]"
-		echo "    Platform! Values: targetall, hostlinux, hostwindows, staticanalysis, radio2003, dsp7, web."
+		echo "    Platform! Values: targetall, hostlinux, hostwindows, staticanalysis, radio, dsp, web."
 		echo " "
 		echo "  -r=|--rebuild=[$REBUILD]"
 		echo "    Rebuild all: Values 'y' OR 'n'."
@@ -148,6 +148,7 @@ then
     if      [[ "hostlinux"      == "${PLATFORM}" ]]; then COMPILER="gcc";
     elif    [[ "hostwindows"    == "${PLATFORM}" ]]; then COMPILER="gcc";
     elif    [[ "web"            == "${PLATFORM}" ]]; then COMPILER="emscripten";
+    elif    [[ "radio"          == "${PLATFORM}" ]]; then COMPILER="keil";
     elif    [[ "staticanalysis" == "${PLATFORM}" ]]; then COMPILER="clangtidy";
     fi
 fi

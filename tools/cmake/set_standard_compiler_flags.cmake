@@ -34,7 +34,11 @@ if ( (${CMAKE_C_COMPILER_ID} MATCHES "GNU") OR (${CMAKE_C_COMPILER_ID} MATCHES "
     set (STANDARD_CXX_COMPILE_FLAGS "-Wall;-Wextra;-Wsign-conversion;-Wno-zero-as-null-pointer-constant;-Werror${SYSTEM_SPECIFIC_FLAGS}")
 
 #elseif (${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
-#elseif (${CMAKE_C_COMPILER_ID} MATCHES "ARMCC")
+elseif (${CMAKE_C_COMPILER_ID} MATCHES "ARMCC")
+    set (COMMON_C_COMPILE_FLAGS "")
+    set (COMMON_CXX_COMPILE_FLAGS "")
+    set (STANDARD_C_COMPILE_FLAGS "")
+    set (STANDARD_CXX_COMPILE_FLAGS "")
 #elseif (${CMAKE_C_COMPILER_ID} MATCHES "ARMClang")
 #elseif (${CMAKE_C_COMPILER_ID} MATCHES "Synopsys???")
 else()
