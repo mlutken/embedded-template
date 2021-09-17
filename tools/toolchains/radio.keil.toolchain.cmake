@@ -7,10 +7,8 @@ set (PLATFORM_COMPILER      keil        )
 set (PLATFORM_TYPE          embedded    )
 
 if (EXISTS "c:/Keil_v5/ARM/ARMCC/bin")
-    message("AAAAAAA: c:/Keil_v5/ARM/ARMCC/bin")
     set (RADIO_PREFIX "c:/Keil_v5/ARM/ARMCC/bin")
 elseif (EXISTS "/c/Keil_v5/ARM/ARMCC/bin")
-    message("BBBBBB: /c/Keil_v5/ARM/ARMCC/bin")
     set (RADIO_PREFIX "/c/Keil_v5/ARM/ARMCC/bin")
 endif()
 
