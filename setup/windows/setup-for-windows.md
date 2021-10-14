@@ -12,8 +12,8 @@ https://chocolatey.org/install
 Install clang and other tools using choco installer
 ---------------------------------------------------
 Open a Windows (cmd.exe) command propmt with Admin rights and run these commands
-> choco install -y wget make cmake ninja cloc llvm mingw gcc-arm qtcreator doxygen.install graphviz
-> choco install -y meld --version=3.18.3
+- choco install -y wget make cmake ninja cloc llvm mingw gcc-arm qtcreator doxygen.install graphviz
+- choco install -y meld --version=3.18.3
 
 
 Add the follwing directories to your PATH environment variable:
